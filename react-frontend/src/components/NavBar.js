@@ -13,7 +13,7 @@ class NavBar extends Component {
           <ReactBootStrap.Nav className="mr-auto">
             <ReactBootStrap.Nav.Link href="/">Home</ReactBootStrap.Nav.Link>
             <ReactBootStrap.Nav.Link href="/FoodList">
-              View the list of Favorite foods
+              List of My Favorite Street Foods
             </ReactBootStrap.Nav.Link>
           </ReactBootStrap.Nav>
         </ReactBootStrap.Navbar.Collapse>

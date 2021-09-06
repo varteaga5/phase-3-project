@@ -12,7 +12,7 @@ function App() {
     <Router>
       <div className="App">
         <NavBar />
-        {/* switch is optional, switch and exact go together, finds first match and then stops, renders one at a time */}
+        {/* switch is ensures that one route is rendered at time, switch and exact go together, finds first match and then stops, renders one at a time */}
         <Switch>
           {/* route that goes home */}
           <Route exact path="/">

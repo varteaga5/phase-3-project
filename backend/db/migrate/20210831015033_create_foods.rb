@@ -1,4 +1,4 @@
-class FavFoods < ActiveRecord::Migration[5.2]
+class CreateFoods < ActiveRecord::Migration[5.2]
   def change
     create_table :fav_foods do |t|
       t.string :name

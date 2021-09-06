@@ -1,20 +1,28 @@
 import React from "react";
 import "../App.css";
-import { CATEGORIES } from "../data";
-import DisplayFood from "./DisplayFood";
+import ShowFood from "./ShowFood";
+import Categories from "./Categories";
+import FoodForm from "./FoodForm";
 
-class App extends React.Component {
+class FoodList extends React.Component {
   state = {
     categoryDisplay: "",
     newFood: "",
-    chooseCategory: "Code",
+    chooseCategory: "American",
     foods: [],
   };
 
   componentDidMount() {
-    fetch("http://localhost:3000/foods")
+    fetch("http://localhost:9292/FoodList", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
       .then((res) => res.json())
-      .then((foods) => this.setState({ foods }));
+      //   .then((data) => console.log("this is data", data))
+      .then((data) => this.setState({ foods: data.fav_foods }));
   }
 
   handleClick = (event) => {
@@ -24,7 +32,7 @@ class App extends React.Component {
   };
 
   handleDelete = (deleteFood) => {
-    fetch("http://localhost:3000/foods/" + deleteFood.id, {
+    fetch("http://localhost:9292/FoodList/" + deleteFood.id, {
       method: "DELETE",
     });
 
@@ -36,68 +44,53 @@ class App extends React.Component {
   handleAddFood = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:3000/foods", {
+    fetch("http://localhost:9292/FoodList", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        text: this.state.newFood,
+        name: this.state.newFood,
         category: this.state.chooseCategory,
       }),
     })
       .then((res) => res.json())
       .then((addedFood) => {
+        console.log("this is addedFood", addedFood);
         this.setState({
-          foods: [...this.state.foods, addedFood],
+          // will be looking for the symbol specified/created on line 28 in application.rb
+          foods: [...this.state.foods, addedFood.fav_food],
           newFood: "",
         });
       });
   };
 
+  inputHandleOnChange = (e) => this.setState({ newFood: e.target.value });
+  selectHandleOnChange = (e) =>
+    this.setState({ chooseCategory: e.target.value });
+
   render() {
+    console.log("this is this.state.foods", this.state.foods);
     let filterFoods = this.state.foods.filter((food) =>
       food.category.includes(this.state.categoryDisplay)
     );
 
     return (
       <div className="App">
-        <h2>My Foods</h2>
-        <div className="categories">
-          <h5>Category filters</h5>
-          {CATEGORIES.map((category, i) => (
-            <button key={i} onClick={this.handleClick}>
-              {category}
-            </button>
-          ))}
-        </div>
+        <h2>My Favorite Street Foods</h2>
+        <Categories handleClick={this.handleClick} />
         <div className="foods">
-          <h5>foods</h5>
-          <form className="new-food-form">
-            <input
-              onChange={(e) => this.setState({ newFood: e.target.value })}
-              placeholder="New food details"
-              type="text"
-              value={this.state.newFood}
-            ></input>
-            <select
-              onChange={(e) =>
-                this.setState({ chooseCategory: e.target.value })
-              }
-            >
-              <option>American</option>
-              <option>Mexican</option>
-              <option>Asian</option>
-              <option>Indian</option>
-            </select>
-            <input
-              onClick={this.handleAddFood}
-              type="submit"
-              value="Add food"
-            ></input>
-          </form>
+          <br />
+          <h5>enter your favorite street foods</h5>
+          <FoodForm
+            inputHandleOnChange={this.inputHandleOnChange}
+            inputValue={this.state.newFood}
+            selectHandleOnChange={this.selectHandleOnChange}
+            inputHandleAddFood={this.handleAddFood}
+          />
+          <br />
           {filterFoods.map((food, i) => (
-            <DisplayFood key={i} food={food} handleDelete={this.handleDelete} />
+            <ShowFood key={i} food={food} handleDelete={this.handleDelete} />
           ))}
         </div>
       </div>
@@ -105,4 +98,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default FoodList;
