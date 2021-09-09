@@ -43,26 +43,27 @@ class FoodList extends React.Component {
 
   handleAddFood = (e) => {
     e.preventDefault();
-
-    fetch("http://localhost:9292/FoodList", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: this.state.newFood,
-        category: this.state.chooseCategory,
-      }),
-    })
-      .then((res) => res.json())
-      .then((addedFood) => {
-        console.log("this is addedFood", addedFood);
-        this.setState({
-          // will be looking for the symbol specified/created on line 28 in application.rb
-          foods: [...this.state.foods, addedFood.fav_food],
-          newFood: "",
+    if (this.state.newFood.length > 0) {
+      fetch("http://localhost:9292/FoodList", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: this.state.newFood,
+          category: this.state.chooseCategory,
+        }),
+      })
+        .then((res) => res.json())
+        .then((addedFood) => {
+          console.log("this is addedFood", addedFood);
+          this.setState({
+            // will be looking for the symbol specified/created on line 28 in application.rb
+            foods: [...this.state.foods, addedFood.fav_food],
+            newFood: "",
+          });
         });
-      });
+    }
   };
 
   inputHandleOnChange = (e) => this.setState({ newFood: e.target.value });
@@ -70,7 +71,6 @@ class FoodList extends React.Component {
     this.setState({ chooseCategory: e.target.value });
 
   render() {
-    console.log("this is this.state.foods", this.state.foods);
     let filterFoods = this.state.foods.filter((food) =>
       food.category.includes(this.state.categoryDisplay)
     );
